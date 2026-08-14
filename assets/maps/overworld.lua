@@ -40,7 +40,260 @@ return {
       properties = {},
       wangsets = {},
       tilecount = 1024,
-      tiles = {}
+      tiles = {
+        {
+          id = 4,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 5,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 6,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 7,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 8,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 9,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 10,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 11,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 36,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 37,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 38,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 39,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 40,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 41,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 42,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 43,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 64,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 66,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 68,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 69,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 70,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 71,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 72,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 73,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 74,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 75,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 96,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 98,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 100,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 101,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 102,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 103,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 104,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 105,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 106,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 107,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 128,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 129,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 130,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 160,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 161,
+          properties = {
+            ["col"] = true
+          }
+        },
+        {
+          id = 162,
+          properties = {
+            ["col"] = true
+          }
+        }
+      }
     }
   },
   layers = {
@@ -51,7 +304,7 @@ return {
       width = 18,
       height = 10,
       id = 1,
-      name = "Tile Layer 1",
+      name = "terrain",
       class = "",
       visible = true,
       opacity = 1,
