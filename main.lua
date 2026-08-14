@@ -62,7 +62,7 @@ function love.update(dt)
                 pl.x=px
                 pl.y=py
             else
-                table.insert(fallTiles,{x=px*size,y=py*size,tile=map.layers["terrain"].data[pl.y+1][pl.x+1].gid,s=1,t=1,r=0})
+                table.insert(fallTiles,{x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0})
                 timer.tween(0.3,fallTiles[#fallTiles],{y=fallTiles[#fallTiles].y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad")
 
                 map:setLayerTile("terrain",px+1,py+1,0)
@@ -92,6 +92,6 @@ function love.draw()
         lg.setColor(0,0,0,0.4)
         lg.rectangle("fill",pl.dx,pl.dy,8,8)
         lg.setColor(1,1,1)
-        spr(pl.tile,pl.dx,pl.dy-2+pl.dz)
+        spr(pl.tile,pl.dx,pl.dy+pl.dz)
     endDraw()
 end
