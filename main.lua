@@ -25,11 +25,28 @@ function love.load()
         lg.draw(sheet,quads[tile+1],x,y,...)
     end
 
-    pl={x=0,y=0,tile=72,move=true,dz=0}
+    pl={x=17,y=8,tile=72,move=true,dz=0}
     pl.dx=pl.x*size
     pl.dy=pl.y*size
 
     fallTiles={}
+
+    cam={x=0,y=0,dx=0,dy=0,w=conf.gW/size,h=conf.gH/size,history={}}
+    cam.reset=function()
+        print("X:"..(cam.x*cam.w+1)..", Y:"..(cam.y*cam.h+1))
+        print("W:"..(cam.x*cam.w+1+cam.x*cam.w+cam.w-1)..", H:"..(cam.y*cam.h+1+cam.y*cam.h+cam.h-1))
+        for y=cam.y*cam.h+1,cam.y*cam.h+cam.h-1 do
+            table.insert(cam.history,{})
+            
+            for x=cam.x*cam.w+1,cam.x*cam.w+cam.w-1 do
+                local id=map.layers["terrain"].data[y][x].gid
+                map:setLayerTile("terrain",x,y,id)
+                table.insert(cam.history[y],id)
+            end
+        end
+    end
+
+    print((cam.x+1)*cam.w)
 end
 
 function love.update(dt)
@@ -62,6 +79,13 @@ function love.update(dt)
                 pl.x=px
                 pl.y=py
             else
+                if pl.x>(cam.x+1)*cam.w-1 then
+                    cam.x=cam.x+1
+                end
+                if pl.x<(cam.x)*cam.w then
+                    cam.x=cam.x-1
+                end
+
                 table.insert(fallTiles,{x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0})
                 timer.tween(0.3,fallTiles[#fallTiles],{y=fallTiles[#fallTiles].y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad")
 
@@ -71,27 +95,33 @@ function love.update(dt)
                     pl.move=true
                 end)
                 timer.tween(0.15/2,pl,{dz=-3},"out-cubic",function()
-                    timer.tween(0.15/2,pl,{dz=0},"in-cubic",function()
-                    
-                    end)
+                    timer.tween(0.15/2,pl,{dz=0},"in-cubic")
                 end)
             end
             
         end
     end
+    cam.dx=cam.x*cam.w*size
+    cam.dy=cam.y*cam.h*size
 end 
 
 function love.draw()
     beginDraw()
-        for k,v in ipairs(fallTiles) do
-            lg.setColor(1,1,1,v.t)
-            spr(v.tile-1,v.x+4,v.y+4,math.rad(v.r),v.s,v.s,4,4)
-        end
-        lg.setColor(1,1,1,1)
-        map:draw()
-        lg.setColor(0,0,0,0.4)
-        lg.rectangle("fill",pl.dx,pl.dy,8,8)
-        lg.setColor(1,1,1)
-        spr(pl.tile,pl.dx,pl.dy+pl.dz)
+        local cx,cy=math.floor(-cam.dx),math.floor(-cam.dy)
+        lg.push()
+        lg.translate(cx,cy)
+            for k,v in ipairs(fallTiles) do
+                lg.setColor(1,1,1,v.t)
+                spr(v.tile-1,v.x+4,v.y+4,math.rad(v.r),v.s,v.s,4,4)
+            end
+            lg.setColor(0.7,0.7,0.8,1)
+            map:draw(cx,cy+1)
+            lg.setColor(1,1,1,1)
+            map:draw(cx,cy)
+            lg.setColor(0,0,0,0.4)
+            lg.rectangle("fill",pl.dx,pl.dy,8,8)
+            lg.setColor(1,1,1)
+            spr(pl.tile,pl.dx,pl.dy+pl.dz)
+        lg.pop()
     endDraw()
 end
