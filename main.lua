@@ -31,22 +31,10 @@ function love.load()
 
     fallTiles={}
 
-    cam={x=0,y=0,dx=0,dy=0,w=conf.gW/size,h=conf.gH/size,history={}}
-    cam.reset=function()
-        print("X:"..(cam.x*cam.w+1)..", Y:"..(cam.y*cam.h+1))
-        print("W:"..(cam.x*cam.w+1+cam.x*cam.w+cam.w-1)..", H:"..(cam.y*cam.h+1+cam.y*cam.h+cam.h-1))
-        for y=cam.y*cam.h+1,cam.y*cam.h+cam.h-1 do
-            table.insert(cam.history,{})
-            
-            for x=cam.x*cam.w+1,cam.x*cam.w+cam.w-1 do
-                local id=map.layers["terrain"].data[y][x].gid
-                map:setLayerTile("terrain",x,y,id)
-                table.insert(cam.history[y],id)
-            end
-        end
-    end
+    cam={x=0,y=0,dx=0,dy=0,w=conf.gW/size,h=conf.gH/size}
 
-    print((cam.x+1)*cam.w)
+    cam.dx=pl.x*size-conf.gW/2+4
+    cam.dy=pl.y*size-conf.gH/2+4
 end
 
 function love.update(dt)
@@ -79,13 +67,6 @@ function love.update(dt)
                 pl.x=px
                 pl.y=py
             else
-                if pl.x>(cam.x+1)*cam.w-1 then
-                    cam.x=cam.x+1
-                end
-                if pl.x<(cam.x)*cam.w then
-                    cam.x=cam.x-1
-                end
-
                 table.insert(fallTiles,{x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0})
                 timer.tween(0.3,fallTiles[#fallTiles],{y=fallTiles[#fallTiles].y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad")
 
@@ -97,12 +78,14 @@ function love.update(dt)
                 timer.tween(0.15/2,pl,{dz=-3},"out-cubic",function()
                     timer.tween(0.15/2,pl,{dz=0},"in-cubic")
                 end)
+                timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"out-cubic")
             end
             
         end
     end
-    cam.dx=cam.x*cam.w*size
-    cam.dy=cam.y*cam.h*size
+    
+    cam.dx=clamp(cam.dx,0,map.width*map.tilewidth-conf.gW)
+    cam.dy=clamp(cam.dy,0,map.height*map.tileheight-conf.gH)
 end 
 
 function love.draw()
