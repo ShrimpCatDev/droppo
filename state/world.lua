@@ -29,17 +29,17 @@ function world:enter(prev,data)
     cam.dy=pl.y*size-conf.gH/2+4
 
     for k,v in ipairs(map.layers["camera"].objects) do
-        if v.properties.name and v.properties.name==data.camera then
+        --[[if v.properties.name and v.properties.name==data.camera then
             cam.bx=v.x
             cam.by=v.y
             cam.bx1=v.x+v.width-conf.gW
             cam.by1=v.y+v.height-conf.gH
-        else
+        else]]
             cam.bx=0
             cam.by=0
             cam.bx1=map.width*map.tilewidth-conf.gW
             cam.bx2=map.height*map.tileheight-conf.gH
-        end
+        --end
     end
 end
 
@@ -84,8 +84,35 @@ function world:update(dt)
             local u=map.layers["terrain"].data[pl.y+1][pl.x+1]==nil --check if there is a blank tile, will probably change to something more reliable later
             
             if t.col or u then --check if there is a wall or void tile, if so, move the player back to the previous position.
-                pl.x=px
-                pl.y=py
+                local moved=false
+
+                if not u then
+                    for k,v in ipairs(map.layers["data"].objects) do
+                        if v.properties.kind=="move" and v.properties.to and v.x/size==pl.x and v.y/size==pl.y then
+                            for k,u in ipairs(map.layers["data"].objects) do
+                                if u.properties.kind=="spawn" and u.properties.name==v.properties.to then
+                                    pl.x=u.x/size
+                                    pl.y=u.y/size
+                                    moved=true
+                                    break
+                                end
+                            end
+
+                            if moved then
+                                pl.dx=pl.x*size
+                                pl.dy=pl.y*size
+                                cam.dx=pl.dx-conf.gW/2+4
+                                cam.dy=pl.dy-conf.gH/2+4
+                                break
+                            end
+                        end
+                    end
+                end
+
+                if not moved then
+                    pl.x=px
+                    pl.y=py
+                end
             else
                 table.insert(pl.history,{x=px,y=py,id=map.layers["terrain"].data[py+1][px+1].gid,frame=pl.tile}) --player undo feature
                 if #pl.history>5 then table.remove(pl.history,1) end --there is an undo limit of 5
@@ -134,8 +161,8 @@ function world:update(dt)
         timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"in-cubic") --move camera
     end
     
-    cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
-    cam.dy=clamp(cam.dy,cam.by,cam.by1) --ditto but y
+    --cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
+    --cam.dy=clamp(cam.dy,cam.by,cam.by1) --ditto but y
 end
 
 local function drawMap(tilemap)

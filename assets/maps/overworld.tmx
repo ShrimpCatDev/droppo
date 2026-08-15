@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="40" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="6">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="96" height="40" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="12">
  <editorsettings>
   <export target="overworld.lua" format="lua"/>
  </editorsettings>
@@ -145,6 +145,11 @@
     <property name="col" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="97">
+   <properties>
+    <property name="col" type="bool" value="true"/>
+   </properties>
+  </tile>
   <tile id="98">
    <properties>
     <property name="col" type="bool" value="true"/>
@@ -267,7 +272,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,98,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,165,
@@ -288,8 +293,36 @@
    </properties>
    <point/>
   </object>
+  <object id="7" x="64" y="40">
+   <properties>
+    <property name="kind" value="move"/>
+    <property name="to" value="room1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="9" x="672" y="240">
+   <properties>
+    <property name="kind" value="spawn"/>
+    <property name="name" value="room1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="10" x="672" y="232">
+   <properties>
+    <property name="kind" value="move"/>
+    <property name="to" value="out1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="11" x="64" y="48">
+   <properties>
+    <property name="kind" value="spawn"/>
+    <property name="name" value="out1"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
- <objectgroup id="3" name="camera">
+ <objectgroup id="3" name="camera" visible="0">
   <object id="2" x="0" y="0" width="384" height="160">
    <properties>
     <property name="name" value="cam1"/>
