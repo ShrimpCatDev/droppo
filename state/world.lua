@@ -29,7 +29,7 @@ function world:enter(prev,data)
     cam.dy=pl.y*size-conf.gH/2+4
 
     for k,v in ipairs(map.layers["camera"].objects) do
-        if v.properties.name then
+        if v.properties.name and v.properties.name==data.camera then
             cam.bx=v.x
             cam.by=v.y
             cam.bx1=v.x+v.width-conf.gW
