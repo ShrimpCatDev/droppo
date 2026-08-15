@@ -132,9 +132,16 @@ end
 
 function love.draw()
     beginDraw()
+
+        lg.clear(39/256,69/256,254/256)
+
         local cx,cy=math.floor(-cam.dx),math.floor(-cam.dy)
         lg.push()
         lg.translate(cx,cy)
+            lg.setColor(0.1,0.5,1)
+            spr(pl.tile,pl.dx,pl.dy+pl.dz+16,0,1,-1)
+            lg.setColor(1,1,1,1)
+
             for k,v in ipairs(fallTiles) do
                 lg.setColor(1,1,1,v.t)
                 spr(v.tile-1,v.x+4,v.y+4,math.rad(v.r),v.s,v.s,4,4)
