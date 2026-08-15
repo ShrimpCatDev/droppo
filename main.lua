@@ -25,7 +25,7 @@ function love.load()
         lg.draw(sheet,quads[tile+1],x,y,...)
     end
 
-    pl={x=17,y=8,tile=72,move=true,dz=0}
+    pl={x=17,y=8,tile=72,move=true,dz=0,history={},dirs={up=73,down=72,left=74,right=75}}
     pl.dx=pl.x*size
     pl.dy=pl.y*size
 
@@ -45,15 +45,19 @@ function love.update(dt)
         local px,py=pl.x,pl.y
         if input:pressed("up") then
             pl.y=pl.y-1
+            pl.tile=pl.dirs.up
         end
         if input:pressed("down") then
             pl.y=pl.y+1
+            pl.tile=pl.dirs.down
         end
         if input:pressed("left") then
             pl.x=pl.x-1
+            pl.tile=pl.dirs.left
         end
         if input:pressed("right") then
             pl.x=pl.x+1
+            pl.tile=pl.dirs.right
         end
         local v=pl.x<0 or pl.x>=map.width or pl.y<0 or pl.y>=map.height
         if v then 
@@ -67,8 +71,21 @@ function love.update(dt)
                 pl.x=px
                 pl.y=py
             else
-                table.insert(fallTiles,{x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0})
-                timer.tween(0.3,fallTiles[#fallTiles],{y=fallTiles[#fallTiles].y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad")
+                
+                table.insert(pl.history,{x=px,y=py,id=map.layers["terrain"].data[py+1][px+1].gid,frame=pl.tile})
+                if #pl.history>5 then table.remove(pl.history,1) end
+
+                local fallTile = {x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0}
+                table.insert(fallTiles, fallTile)
+
+                timer.tween(0.3, fallTile, {y=fallTile.y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad",function()
+                    for i, ft in ipairs(fallTiles) do
+                        if ft == fallTile then
+                            table.remove(fallTiles, i)
+                            break
+                        end
+                    end
+                end)
 
                 map:setLayerTile("terrain",px+1,py+1,0)
                 pl.move=false
@@ -83,6 +100,31 @@ function love.update(dt)
             
         end
     end
+
+    if pl.move and input:pressed("undo") and #pl.history>0 then
+        local h=pl.history[#pl.history]
+        table.remove(pl.history,#pl.history)
+        map:setLayerTile("terrain",h.x+1,h.y+1,h.id)
+        pl.x,pl.y,pl.tile=h.x,h.y,h.frame
+
+        pl.move=false
+
+        
+        timer.tween(0.15,pl,{dx=h.x*size,dy=h.y*size},"in-cubic",function()
+            pl.move=true
+        end)
+        timer.tween(0.15/2,pl,{dz=-3},"in-cubic",function()
+            timer.tween(0.15/2,pl,{dz=0},"out-cubic")
+        end)
+        timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"in-cubic")
+    end
+
+
+    --local tx=pl.x*size-conf.gW/2+4
+    --local ty=pl.y*size-conf.gH/2+4
+    
+    --cam.dx=lerpDt(cam.dx,tx,8,dt)
+    --cam.dy=lerpDt(cam.dy,ty,8,dt)
     
     cam.dx=clamp(cam.dx,0,map.width*map.tilewidth-conf.gW)
     cam.dy=clamp(cam.dy,0,map.height*map.tileheight-conf.gH)
