@@ -114,11 +114,20 @@ function world:update(dt)
     cam.dy=clamp(cam.dy,0,map.height*map.tileheight-conf.gH) --ditto but y
 end
 
+local function drawMap(tilemap)
+    for _, layer in ipairs(tilemap.layers) do
+        if layer.visible and layer.opacity > 0 then
+            map:drawLayer(layer)
+        end
+    end
+end
+
 function world:draw()
     beginDraw() --apply pixelated screen
         lg.clear(39/256,69/256,254/256) --blue color, will probably change later to more cool void-y effect
 
-        local cx,cy=math.floor(-cam.dx),math.floor(-cam.dy) --camera position
+        local cx,cy=math.floor(-cam.dx),math.floor(-cam.dy) --camera position with floor
+        --local cx,cy=-cam.dx,-cam.dy --camera position
 
         lg.push()
         lg.translate(cx,cy) --apply camera
@@ -133,10 +142,10 @@ function world:draw()
             end
 
             lg.setColor(0.7,0.7,0.8,1)
-                map:draw(cx,cy+1) --draw map with offset to give it more of a 3d effect because yes
+                drawMap(map) --draw map with offset to give it more of a 3d effect because yes
             lg.setColor(1,1,1,1)
 
-            map:draw(cx,cy) --draw map normally
+            drawMap(map) --draw map normally
 
             lg.setColor(0,0,0,0.4)
                 lg.rectangle("fill",pl.dx,pl.dy,8,8) --draw player shadow
@@ -145,7 +154,7 @@ function world:draw()
             spr(pl.tile,pl.dx,pl.dy+pl.dz) --draw player
             
         lg.pop()
-        --text.draw("hello world",0,0,15,0)
+        text.draw("RhelloNworldE i amNan WidiotE",0,0,15,0)
     endDraw()
 end
 
