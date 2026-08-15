@@ -29,17 +29,17 @@ function world:enter(prev,data)
     cam.dy=pl.y*size-conf.gH/2+4
 
     for k,v in ipairs(map.layers["camera"].objects) do
-        --[[if v.properties.name and v.properties.name==data.camera then
+        if v.properties.name and v.properties.name==data.camera then
             cam.bx=v.x
             cam.by=v.y
             cam.bx1=v.x+v.width-conf.gW
             cam.by1=v.y+v.height-conf.gH
-        else]]
+        else
             cam.bx=0
             cam.by=0
             cam.bx1=map.width*map.tilewidth-conf.gW
             cam.bx2=map.height*map.tileheight-conf.gH
-        --end
+        end
     end
 end
 
@@ -103,10 +103,27 @@ function world:update(dt)
                                 pl.dy=pl.y*size
                                 cam.dx=pl.dx-conf.gW/2+4
                                 cam.dy=pl.dy-conf.gH/2+4
+                                for k,v in ipairs(map.layers["camera"].objects) do
+                                    print("owo")
+                                    if collision(v.x,v.y,pl.dx,pl.dy,v.width,v.height,8,8) then
+                                        print("change camera room")
+                                        cam.bx=v.x
+                                        cam.by=v.y
+                                        cam.bx1=v.x+v.width-conf.gW
+                                        cam.by1=v.y+v.height-conf.gH
+                                        print(cam.bx)
+                                        print(cam.by)
+                                        print(cam.bx1)
+                                        print(cam.by1)
+                                    end
+                                end
+                                pl.history={}
+
                                 break
                             end
                         end
                     end
+                    
                 end
 
                 if not moved then
@@ -117,19 +134,22 @@ function world:update(dt)
                 table.insert(pl.history,{x=px,y=py,id=map.layers["terrain"].data[py+1][px+1].gid,frame=pl.tile}) --player undo feature
                 if #pl.history>5 then table.remove(pl.history,1) end --there is an undo limit of 5
 
-                local fallTile = {x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0} -- falling tile animation
-                table.insert(fallTiles, fallTile)
+                if not map:getTileProperties("terrain",px+1,py+1).unbreakable then
+                    local fallTile = {x=px*size,y=py*size,tile=map.layers["terrain"].data[py+1][px+1].gid,s=1,t=1,r=0} -- falling tile animation
+                    table.insert(fallTiles, fallTile)
 
-                timer.tween(0.3, fallTile, {y=fallTile.y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad",function()
-                    for i, ft in ipairs(fallTiles) do --i feel like there should be an easier way of doing this qwp
-                        if ft == fallTile then
-                            table.remove(fallTiles, i)
-                            break
+                    timer.tween(0.3, fallTile, {y=fallTile.y+6,s=0.2,t=0,r=math.random(0,180)},"in-quad",function()
+                        for i, ft in ipairs(fallTiles) do --i feel like there should be an easier way of doing this qwp
+                            if ft == fallTile then
+                                table.remove(fallTiles, i)
+                                break
+                            end
                         end
-                    end
-                end)
+                    end)
 
-                map:setLayerTile("terrain",px+1,py+1,0) --make tile at players position disappear
+                    map:setLayerTile("terrain",px+1,py+1,0) --make tile at players position disappear
+                end
+
                 pl.move=false --player moved so make it unmoveable until animation is done
                 timer.tween(0.15,pl,{dx=pl.x*size,dy=pl.y*size},"out-cubic",function() --the move to next position animation
                     pl.move=true --okii player can move again :3
@@ -138,6 +158,7 @@ function world:update(dt)
                     timer.tween(0.15/2,pl,{dz=0},"in-cubic") --hop down
                 end)
                 timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"out-cubic") --move camera, will probably change to different system later
+            
             end
             
         end
@@ -161,8 +182,8 @@ function world:update(dt)
         timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"in-cubic") --move camera
     end
     
-    --cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
-    --cam.dy=clamp(cam.dy,cam.by,cam.by1) --ditto but y
+    cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
+    cam.dy=clamp(cam.dy,cam.by,cam.by1) --ditto but y
 end
 
 local function drawMap(tilemap)
@@ -184,7 +205,7 @@ function world:draw()
         lg.translate(cx,cy) --apply camera
 
             lg.setColor(0.1,0.5,1)
-                spr(pl.tile,pl.dx,pl.dy+pl.dz+16,0,1,-1) --reflection, will probably get rid of later
+                spr(pl.tile,pl.dx,pl.dy-pl.dz+16,0,1,-1) --reflection, will probably get rid of later
             lg.setColor(1,1,1,1)
 
             for k,v in ipairs(fallTiles) do --drawing the falling tile effect
