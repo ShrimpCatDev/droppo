@@ -48,7 +48,7 @@ function love.load()
     }
 
     --switch gamestate
-    gs.switch(state.world)
+    gs.switch(state.world,{map="overworld",spawn="init",camera="cam1"})
 end
 
 function love.update(dt)

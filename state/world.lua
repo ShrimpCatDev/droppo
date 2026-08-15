@@ -1,12 +1,22 @@
 local world={}
 --NOTE: ALL OF THESE COMMENTS WERE WRITTEN BY ME, NOT AI SO DONT YELL AT MEEEE
 
-function world:enter()
+function world:enter(prev,data)
     --load map ofc
-    map=sti("assets/maps/overworld.lua")
+    map=sti("assets/maps/"..data.map..".lua")
+    map.layers["data"].visible=false
+    map.layers["camera"].visible=false
 
     --initialize player
     pl={x=17,y=8,tile=72,move=true,dz=0,history={},dirs={up=73,down=72,left=74,right=75}}
+
+    for k,v in ipairs(map.layers["data"].objects) do
+        if v.properties.kind=="spawn" and v.properties.name==data.spawn then
+            pl.x=v.x/size
+            pl.y=v.y/size
+        end
+    end
+
     pl.dx=pl.x*size
     pl.dy=pl.y*size
 
@@ -14,9 +24,23 @@ function world:enter()
     fallTiles={}
 
     --initialize camera
-    cam={x=0,y=0,dx=0,dy=0,w=conf.gW/size,h=conf.gH/size}
+    cam={x=0,y=0,dx=0,dy=0,w=conf.gW/size,h=conf.gH/size,bx=0,by=0,bx1=0,by1=0}
     cam.dx=pl.x*size-conf.gW/2+4
     cam.dy=pl.y*size-conf.gH/2+4
+
+    for k,v in ipairs(map.layers["camera"].objects) do
+        if v.properties.name then
+            cam.bx=v.x
+            cam.by=v.y
+            cam.bx1=v.x+v.width-conf.gW
+            cam.by1=v.y+v.height-conf.gH
+        else
+            cam.bx=0
+            cam.by=0
+            cam.bx1=map.width*map.tilewidth-conf.gW
+            cam.bx2=map.height*map.tileheight-conf.gH
+        end
+    end
 end
 
 function world:update(dt)
@@ -110,8 +134,8 @@ function world:update(dt)
         timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"in-cubic") --move camera
     end
     
-    cam.dx=clamp(cam.dx,0,map.width*map.tilewidth-conf.gW) --clamp camera to map bounds
-    cam.dy=clamp(cam.dy,0,map.height*map.tileheight-conf.gH) --ditto but y
+    cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
+    cam.dy=clamp(cam.dy,cam.by,cam.by1) --ditto but y
 end
 
 local function drawMap(tilemap)
@@ -124,7 +148,7 @@ end
 
 function world:draw()
     beginDraw() --apply pixelated screen
-        lg.clear(39/256,69/256,254/256) --blue color, will probably change later to more cool void-y effect
+        lg.clear(0,0,0)--39/256,69/256,254/256) --blue color, will probably change later to more cool void-y effect
 
         local cx,cy=math.floor(-cam.dx),math.floor(-cam.dy) --camera position with floor
         --local cx,cy=-cam.dx,-cam.dy --camera position
@@ -154,7 +178,7 @@ function world:draw()
             spr(pl.tile,pl.dx,pl.dy+pl.dz) --draw player
             
         lg.pop()
-        text.draw("RhelloNworldE i amNan WidiotE",0,0,15,0)
+        --text.draw("RhelloNworldE i amNan WidiotE",0,0,15,0)
     endDraw()
 end
 
