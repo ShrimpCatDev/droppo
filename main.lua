@@ -11,9 +11,15 @@ function initSprite(img,size)
 end
 
 function love.load()
+    pal=require("lib/pal")
+    pal:new("BitSoda",li.newImageData("assets/palette.png"))
+    pal:load("BitSoda")
+
+    text=require("text")
+    text.init(736,775,"abcdefghijklmnopqrstuvwxyz0123456789.!?:")
+
     timer=require("lib/hump/timer")
-    font = require("assets/font/skull")
-    lg.setFont(font)
+
     shove.createLayer("game")
 
     sti=require("lib/sti")
@@ -154,6 +160,14 @@ function love.draw()
             lg.rectangle("fill",pl.dx,pl.dy,8,8)
             lg.setColor(1,1,1)
             spr(pl.tile,pl.dx,pl.dy+pl.dz)
+            
         lg.pop()
+        text.draw("hello world",0,0,15,0)
     endDraw()
+end
+
+function love.keypressed(k)
+    if k=="f11" then
+        love.window.setFullscreen(not love.window.getFullscreen())
+    end
 end
