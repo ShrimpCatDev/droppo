@@ -17,7 +17,8 @@ conf.input={
         down={"key:down"},
         left={"key:left"},
         right={"key:right"},
-        undo={"key:z"}
+        undo={"key:z"},
+        build={"key:x"}
     },
     pairs={
 

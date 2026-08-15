@@ -245,6 +245,11 @@
     <property name="col" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="705">
+   <properties>
+    <property name="col" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <layer id="1" name="terrain" width="96" height="40">
   <data encoding="csv">

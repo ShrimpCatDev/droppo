@@ -8,7 +8,7 @@ function world:enter(prev,data)
     map.layers["camera"].visible=false
 
     --initialize player
-    pl={x=17,y=8,tile=72,move=true,dz=0,history={},dirs={up=73,down=72,left=74,right=75}}
+    pl={x=17,y=8,tile=72,move=true,dz=0,history={},dirs={up=73,down=72,left=74,right=75},dirx=0,diry=1}
 
     for k,v in ipairs(map.layers["data"].objects) do
         if v.properties.kind=="spawn" and v.properties.name==data.spawn then
@@ -44,6 +44,7 @@ function world:enter(prev,data)
 end
 
 function world:update(dt)
+    map:update(dt)
     timer.update(dt)
     
     --there's probably a better way to do this
@@ -57,21 +58,29 @@ function world:update(dt)
         if input:pressed("up") then
             pl.y=pl.y-1
             pl.tile=pl.dirs.up
+            pl.dirx=0
+            pl.diry=-1
         end
 
         if input:pressed("down") then
             pl.y=pl.y+1
             pl.tile=pl.dirs.down
+            pl.dirx=0
+            pl.diry=1
         end
 
         if input:pressed("left") then
             pl.x=pl.x-1
             pl.tile=pl.dirs.left
+            pl.dirx=-1
+            pl.diry=0
         end
 
         if input:pressed("right") then
             pl.x=pl.x+1
             pl.tile=pl.dirs.right
+            pl.dirx=1
+            pl.diry=0
         end
 
         local v=pl.x<0 or pl.x>=map.width or pl.y<0 or pl.y>=map.height --check if the player is out of bounds
@@ -81,7 +90,7 @@ function world:update(dt)
             pl.y=py
         else
             local t=map:getTileProperties("terrain",pl.x+1,pl.y+1) --get tile properties, specifially used to check for col property
-            local u=map.layers["terrain"].data[pl.y+1][pl.x+1]==nil --check if there is a blank tile, will probably change to something more reliable later
+            local u=map.layers["terrain"].data[pl.y+1][pl.x+1]==706 --check if there is a blank tile, will probably change to something more reliable later
             
             if t.col or u then --check if there is a wall or void tile, if so, move the player back to the previous position.
                 local moved=false
@@ -147,7 +156,7 @@ function world:update(dt)
                         end
                     end)
 
-                    map:setLayerTile("terrain",px+1,py+1,0) --make tile at players position disappear
+                    map:setLayerTile("terrain",px+1,py+1,706) --make tile at players position disappear
                 end
 
                 pl.move=false --player moved so make it unmoveable until animation is done
@@ -180,6 +189,10 @@ function world:update(dt)
             timer.tween(0.15/2,pl,{dz=0},"out-cubic") --hop x2
         end)
         timer.tween(0.25,cam,{dx=pl.x*size-conf.gW/2+4,dy=pl.y*size-conf.gH/2+4},"in-cubic") --move camera
+    end
+
+    if pl.move and input:pressed("build") then
+        map:setLayerTile("terrain",pl.x+1+pl.dirx,pl.y+1+pl.diry,132)
     end
     
     cam.dx=clamp(cam.dx,cam.bx,cam.bx1) --clamp camera to map bounds
