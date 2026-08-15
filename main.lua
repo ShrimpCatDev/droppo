@@ -29,6 +29,7 @@ function love.load()
 
     sheet=lg.newImage("assets/spritesheet.png")
     size=8
+    quads=initSprite(sheet,8)
     spr=function(tile,x,y,...)
         lg.draw(sheet,quads[tile+1],x,y,...)
     end
